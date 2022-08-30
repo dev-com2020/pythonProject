@@ -6,8 +6,19 @@
 </head>
 <body>
 <p>Witaj w witrynie Bookr {{ X }}</p>
+
+{{ zmienna|filtr }}
+
 {% for i in element %}
 <li>{{ i.title }}</li>
 {% endfor %}
+
+
+{% comment %}
+tutaj będzie komentarz...
+{% endcomment %}
+
+
+
 </body>
 </html>
