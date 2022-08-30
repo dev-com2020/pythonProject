@@ -1,3 +1,15 @@
 h1, h2 {
     color: #C25100;
 }
+
+.btn-primary {
+    background-color: #C25100;
+}
+
+.navbar {
+        min-height: 100px;
+        font-size: 25px;
+      }
+      .navbar-brand {
+        font-size: 25px;
+      }
