@@ -5,6 +5,9 @@
     <title>Witaj w witrynie Bookr</title>
 </head>
 <body>
-<p>Witaj w witrynie Bookr</p>
+<p>Witaj w witrynie Bookr {{ X }}</p>
+{% for i in element %}
+<li>{{ i.title }}</li>
+{% endfor %}
 </body>
 </html>
