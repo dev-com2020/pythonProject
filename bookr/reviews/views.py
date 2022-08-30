@@ -11,6 +11,8 @@ from django.http import HttpResponse
 # def index(request):
 #     name = "Świecie"
 #     return render(request, "base.html", {"name": name})
+from django.views.generic import TemplateView
+
 
 def index(request):
     return render(request, "base.html", )
@@ -19,3 +21,6 @@ def index(request):
 def book_search(request):
     search_text = request.GET.get("search", "")
     return render(request, "search-result.html", {"search_text": search_text})
+
+class HomePage(TemplateView):
+    template_name = 'home_page.html'
