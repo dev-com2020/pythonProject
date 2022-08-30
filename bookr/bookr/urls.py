@@ -15,10 +15,17 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from django.contrib.admin.apps import AdminConfig
 from django.urls import path, include
+
+from reviews.admin import admin_site
+
+class ReviewsAdminConfig(AdminConfig):
+    default_site = 'admin.BookrAdminSite'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('admin2/', admin_site.urls),
     path('', include('reviews.urls')),
 
 ]

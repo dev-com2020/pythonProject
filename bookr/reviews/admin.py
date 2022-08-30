@@ -1,6 +1,22 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Publisher
+from django.contrib.admin import AdminSite
+
+from .models import Publisher, Contributor, Book, BookContributor, Review
+
+class BookrAdminSite(AdminSite):
+    title_header = "Aplikacja administracyjna BookR"
+    site_header = 'Aplikacja administracyjna BookR'
+    index_title = 'Aplikacja administracyjna BookR'
+
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title','isbn')
+
+admin_site = BookrAdminSite(name='bookr')
 
 admin.site.register(Publisher)
+admin.site.register(Contributor)
+admin.site.register(Book, BookAdmin)
+admin.site.register(BookContributor)
+admin.site.register(Review)
