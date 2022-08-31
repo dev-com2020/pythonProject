@@ -10,7 +10,6 @@ class SearchForm(forms.Form):
                                            ('contributor', "Współtwórca")
                                            ))
 
-
 class PublisherForm(forms.ModelForm):
     class Meta:
         model = Publisher

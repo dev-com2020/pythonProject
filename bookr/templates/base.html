@@ -28,6 +28,9 @@
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" value="{{ search_text }}">
               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Wyszukaj</button>
             </form>
+            {% if user.is_authenticated %}
+            <a class="nav-link" href="/account/profile">Użytkownik: {{ user.username }}</a>
+            {% endif %}
           </div>
 </nav>
 <div class="container-fluid">

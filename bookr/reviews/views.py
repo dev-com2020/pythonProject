@@ -1,13 +1,14 @@
+from io import BytesIO
+
+from PIL import Image
 from django.contrib import messages
-from django.contrib.auth.models import User
+from django.core.files.images import ImageFile
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from .models import Book, Review, Contributor, Publisher
-
-from .forms import SearchForm, PublisherForm, ReviewForm
+from .forms import PublisherForm, SearchForm, ReviewForm, BookMediaForm
+from .models import Book, Contributor, Publisher, Review
 from .utils import average_rating
 
 
@@ -20,15 +21,37 @@ def index(request):
 #     search_text = request.GET.get("search", "")
 #     return render(request, "search-results.html", {"search_text": search_text})
 
+def book_media(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+    if request.method == "POST":
+        form = BookMediaForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            book = form.save(False)
+            cover = form.cleaned_data.get("cover")
+            if cover:
+                image = Image.open(cover)
+                image.thumbnail((300, 300))
+                image_data = BytesIO()
+                image.save(fp=image_data, format=cover.image.format)
+                image_file = ImageFile(image_data)
+                book.cover.save(cover.name, image_file)
+            book.save()
+            messages.success(request, "Uaktualniono książkę \"{}\".".format(book))
+            return redirect("book_detail", book.pk)
+        else:
+            form = BookMediaForm(instance=book)
+        return render(request, "reviews/instance-form.html",
+                      {"instance": book, "form": form, "model_type": "Book", "is_file_upload": True})
 
-def my_view(request, id):
-    user = User.objects.get(id=id)
-    return HttpResponse(f"ten użytkownik nazywa się {user.first_name} {user.last_name}")
 
-
-def welcome_view(request):
-    message = f"<html><h2>Witaj w aplikacji BookR</h2><p>W bazie jest {Book.objects.count()} książek.</p></html>"
-    return HttpResponse(message)
+# def my_view(request, id):
+#     user = User.objects.get(id=id)
+#     return HttpResponse(f"ten użytkownik nazywa się {user.first_name} {user.last_name}")
+#
+#
+# def welcome_view(request):
+#     message = f"<html><h2>Witaj w aplikacji BookR</h2><p>W bazie jest {Book.objects.count()} książek.</p></html>"
+#     return HttpResponse(message)
 
 
 def book_list(request):
@@ -66,6 +89,7 @@ def book_detail(request, pk):
 
 def book_search(request):
     search_text = request.GET.get("search", "")
+    search_history = request.session.get('search_history',[])
     form = SearchForm(request.GET)
     books = set()
     if form.is_valid() and form.cleaned_data['search']:
@@ -73,6 +97,12 @@ def book_search(request):
         search_in = form.cleaned_data.get("search_in") or "title"
         if search_in == 'title':
             books = Book.objects.filter(title__icontains=search)
+        if request.user.is_authenticated:
+            search_history.append([search_in, search])
+            request.session['search_history'] = search_history
+        elif search_history:
+            initial = dict(search=search_text, search_in=search_history[-1][0])
+            form = SearchForm(initial=initial)
 
         else:
             fname_contributors = Contributor.objects.filter(first_names__itcontains=search)
@@ -107,6 +137,7 @@ def publisher_edit(request, pk=None):
 
     return render(request, "reviews/instance-form.html",
                   {"form": form, "instance": publisher, "model_type": "Publisher"})
+
 
 def review_edit(request, book_pk, review_pk=None):
     book = get_object_or_404(Book, pk=book_pk)

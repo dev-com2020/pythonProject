@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Bookr{% endblock %}
+
+{% block heading %}Profil{% endblock %}
+
+{% block content %}
+
+
+  <div class="flexrow" >
+    <div class="infocell" >
+      <p>Profile</p>
+      <p>
+          Nazwa użytkownika: {{ request.user.username }} <br>
+          Name: {{ request.user.first_name }} {{ request.user.last_name }}<br>
+          Data dołączenia: {{ request.user.date_joined }} <br>
+          E-mail: {{ request.user.email }}<br>
+          Data ostatniego logowania: {{ request.user.last_login }}<br>
+      </p>
+    </div>
+
+    <div class="infocell" >
+      <p>Wyświetlone książki</p>
+      <p>
+      {% for book_id, book_title in request.session.viewed_books %}
+      <a href="/books/{{ book_id }}">{{ book_title }}</a><br>
+      {% empty %}
+            Brak ostatnio wyświetlonych książek.
+      {% endfor %}
+      </p>
+    </div>
+
+  <div class="infocell" >
+    <p>Search History</p>
+    <p>
+      {% for search_in, search in request.session.search_history %}
+      <a href="{% url 'book_search' %}?search={{search|urlencode}}&search_in={{ search_in}}" >
+            {{ search }} ({{ search_in }})</a>
+      <br>
+      {% empty %}
+        Brak historii wyszukiwania.
+      {% endfor %}
+    </p>
+  </div>
+
+  </div>
+
+{% endblock %}
