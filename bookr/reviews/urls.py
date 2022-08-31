@@ -4,6 +4,8 @@ from django.views.generic import TemplateView
 
 from reviews import views
 
+from reviews.views import IndexView
+
 urlpatterns = [path('', views.index, name="index"),
                path('books/', views.book_list, name="book_list"),
                path('book/<int:pk>/', views.book_detail, name="book_detail"),
@@ -14,4 +16,6 @@ urlpatterns = [path('', views.index, name="index"),
                path('publishers/<int:pk>/', views.publisher_edit, name="publisher_edit"),
                path('publishers/new/', views.publisher_edit, name="publisher_create"),
                path('books/profile', TemplateView.as_view(template_name='profile.html')),
+               path('test', IndexView.as_view(), name='index_view'),
+
                ]

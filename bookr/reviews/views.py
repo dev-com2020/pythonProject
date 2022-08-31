@@ -3,8 +3,10 @@ from io import BytesIO
 from PIL import Image
 from django.contrib import messages
 from django.core.files.images import ImageFile
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.views import View
 from django.views.generic import TemplateView
 
 from .forms import PublisherForm, SearchForm, ReviewForm, BookMediaForm
@@ -47,6 +49,7 @@ def book_media(request, pk):
 
     return render(request, "reviews/instance-form.html",
                   {"instance": book, "form": form, "model_type": "Book", "is_file_upload": True})
+
 
 # def my_view(request, id):
 #     user = User.objects.get(id=id)
@@ -127,8 +130,6 @@ def book_search(request):
     return render(request, "reviews/search-results.html", {"form": form, "search_text": search_text, "books": books})
 
 
-
-
 def publisher_edit(request, pk=None):
     if pk is not None:
         publisher = get_object_or_404(Publisher, pk=pk)
@@ -187,5 +188,6 @@ def review_edit(request, book_pk, review_pk=None):
                    })
 
 
-class HomePage(TemplateView):
-    template_name = 'home_page.html'
+class IndexView(View):
+    def get(self, request):
+        return HttpResponse("Witaj!")

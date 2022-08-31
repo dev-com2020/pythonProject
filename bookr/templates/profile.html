@@ -24,6 +24,7 @@
       <p>Wyświetlone książki</p>
       <p>
       {% book_list user.username %}
+          {{ pewna_wartosc|moj_filtr:","}}
       </p>
     </div>
 

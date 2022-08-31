@@ -21,16 +21,18 @@ from django.urls import path, include
 
 from reviews.admin import admin_site
 
+
 class ReviewsAdminConfig(AdminConfig):
     default_site = 'admin.BookrAdminSite'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin2/', admin_site.urls),
     path('', include('reviews.urls')),
+    path('book_management/', include('book_management.urls'))
 
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
