@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 
 from reviews import views
 
@@ -12,5 +13,5 @@ urlpatterns = [path('', views.index, name="index"),
                path('book-search/', views.book_search, name="book_search"),
                path('publishers/<int:pk>/', views.publisher_edit, name="publisher_edit"),
                path('publishers/new/', views.publisher_edit, name="publisher_create"),
-
+               path('books/profile', TemplateView.as_view(template_name='profile.html')),
                ]
