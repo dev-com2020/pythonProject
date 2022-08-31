@@ -1,0 +1,8 @@
+<ul>
+    {% for book in books_read %}
+    <li>{{ book }}</li>
+    {% empty %}
+            Brak ostatnio wyświetlonych książek.
+    {% endfor %}
+
+</ul>
