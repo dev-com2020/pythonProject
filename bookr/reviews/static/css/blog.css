@@ -11,5 +11,8 @@ h1, h2 {
         font-size: 25px;
       }
       .navbar-brand {
-        font-size: 25px;
+        font-size: 25px
+      }
+      .navbar-brand > img{
+      height: 60px;
       }

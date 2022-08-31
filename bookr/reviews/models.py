@@ -14,6 +14,14 @@ class Publisher(models.Model):
         return self.name
 
 class Book(models.Model):
+
+    def isbn13(self):
+        return "{}-{}-{}-{}-{}".format(self.isbn[0:3],
+                                       self.isbn[3:4],
+                                       self.isbn[4:6],
+                                       self.isbn[6:12],
+                                       self.isbn[12:13])
+
     """Opublikowana książka."""
     title = models.CharField(max_length=70,
                              help_text="Tytuł książki.")
