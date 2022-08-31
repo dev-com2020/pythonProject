@@ -1,11 +1,13 @@
+from django.contrib import messages
 from django.contrib.auth.models import User
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
+from django.utils import timezone
 from django.views.generic import TemplateView
 
-from reviews.models import Book, Review, Contributor
+from .models import Book, Review, Contributor, Publisher
 
-from .forms import SearchForm
+from .forms import SearchForm, PublisherForm, ReviewForm
 from .utils import average_rating
 
 
@@ -82,6 +84,63 @@ def book_search(request):
                 for book in contributor.book_set.all():
                     books.add(book)
     return render(request, "reviews/search-results.html", {"form": form, "search_text": search_text, "books": books})
+
+
+def publisher_edit(request, pk=None):
+    if pk is not None:
+        publisher = get_object_or_404(Publisher, pk=pk)
+    else:
+        publisher = None
+
+    if request.method == "POST":
+        form = PublisherForm(request.POST)
+        if form.is_valid():
+            updated_publisher = form.save()
+            if publisher is None:
+                messages.success(request, "Utworzono wydawnictwo \"{}\".".format(updated_publisher))
+            else:
+                messages.success(request, "Wydawnictwo \"{}\" zostało uaktualnione.".format(updated_publisher))
+
+            return redirect("publisher_edit", updated_publisher.pk)
+    else:
+        form = PublisherForm()
+
+    return render(request, "reviews/instance-form.html",
+                  {"form": form, "instance": publisher, "model_type": "Publisher"})
+
+def review_edit(request, book_pk, review_pk=None):
+    book = get_object_or_404(Book, pk=book_pk)
+
+    if review_pk is not None:
+        review = get_object_or_404(Review, book_id=book_pk, pk=review_pk)
+    else:
+        review = None
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            updated_review = form.save(False)
+            updated_review.book = book
+
+            if review is None:
+                messages.success(request, "Utworzono recenzję dla \"{}\".".format(book))
+            else:
+                updated_review.date_edited = timezone.now()
+                messages.success(request, "Uaktualniono recenzję dla \"{}\".".format(book))
+
+            updated_review.save()
+            return redirect("book_detail", book.pk)
+    else:
+        form = ReviewForm()
+
+    return render(request, "reviews/instance-form.html",
+                  {"form": form,
+                   "instance": review,
+                   "model_type": "Review",
+                   "related_instance": book,
+                   "related_model_type": "Book"
+                   })
 
 
 class HomePage(TemplateView):

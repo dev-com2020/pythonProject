@@ -31,6 +31,9 @@ class Book(models.Model):
                             verbose_name="Numer ISBN książki.")
     publisher = models.ForeignKey(Publisher, on_delete=models.CASCADE)
     contributors = models.ManyToManyField("Contributor", through="BookContributor")
+    cover = models.ImageField(null=True, blank=True, upload_to="book_covers/")
+    sample = models.FileField(null=True, blank=True, upload_to="book_samples/")
+
 
     def __str__(self):
         return "{} - ({})".format(self.title, self.isbn)

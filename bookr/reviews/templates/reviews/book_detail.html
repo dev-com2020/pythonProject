@@ -18,10 +18,21 @@
 <h3>Recenzje:</h3>
 <ul>
     {% for review in reviews %}
-    <li>
-        <span class="text-info">Recenzja: </span><span> {{ review.content }}</span><br>
-    </li>
+    <li class="list-group-item">
+                        <span class="text-info">Recenzja: </span> <span>{{ review.content }}</span>
+                        <br>
+                        <span class="text-info">Data utworzenia: </span><span>{{ review.date_created }}</span>
+                        <br>
+                        <span class="text-info">Data edycji: </span><span>{{ review.date_edited }}</span>
+                        <br>
+                        <span class="text-info">Ocena: </span><span class="badge badge-secondary badge-pill">{{ review.rating }}</span>
+                        <br>
+                        <span class="text-info">Twórca: </span><span>{{ review.creator.username }}</span>
+                        <br>
+                        <a href="{% url 'review_edit' book.pk review.pk %}">Edytuj recenzję</a>
+                  </li>
     {% endfor %}
 </ul>
 {% endif %}
+ <a class="btn btn-primary" href="{% url 'review_create' book.pk %}">Dodaj recenzję</a>
 {% endblock %}
